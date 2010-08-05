@@ -21,8 +21,8 @@ FRAMEWORK_DIR=$FRAMEWORK_BUILD_PATH/$FRAMEWORK_NAME.framework
 
 # Clean any existing framework that might be there already
 echo "Framework: Cleaning framework..."
-[ -d "$FRAMEWORK_BUILD_PATH" ] && \
-  rm -rf "$FRAMEWORK_BUILD_PATH"
+rm -rf $FRAMEWORK_DIR/*
+echo "rm -rf $FRAMEWORK_DIR/*"
 
 # Build the canonical Framework bundle directory structure
 echo "Framework: Setting up directories..."
