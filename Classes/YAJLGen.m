@@ -71,10 +71,12 @@ NSString *const YAJLGenInvalidObjectException = @"YAJLGenInvalidObjectException"
     }
     [self endDictionary];
   } else if ([obj isKindOfClass:[NSNumber class]]) {
-    if ('c' != *[obj objCType]) {
-      [self number:obj];
-    } else {
+    if ('c' == *[obj objCType]) {
       [self bool:[obj boolValue]];
+    } else if ('f' == *[obj objCType] || 'd' == *[obj objCType]) {
+      [self fpNumber:obj];
+    } else {
+      [self number:obj];
     }
   } else if ([obj isKindOfClass:[NSString class]]) {
     [self string:obj];
@@ -122,6 +124,22 @@ NSString *const YAJLGenInvalidObjectException = @"YAJLGenInvalidObjectException"
   unsigned int length = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
   const char *c = [s UTF8String];
   yajl_gen_number(gen_, c, length);
+}
+
+- (void)fpNumber:(NSNumber *)number {
+  NSString *s;
+  // force the string to have a decimal point. 
+  // this is a typing problem with apple's [NSNumber stringValue]
+  if ('f' == *[number objCType] && [number intValue] == [number floatValue])
+    s = [NSString stringWithFormat:@"%i.0", [number intValue]];
+  else if ('d' == *[number objCType] && [number intValue] == [number doubleValue])
+    s = [NSString stringWithFormat:@"%i.0", [number intValue]];
+  else
+    s = [number stringValue];
+  
+  unsigned int length = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  const char *c = [s UTF8String];
+  yajl_gen_number(gen_, c, length);  
 }
 
 - (void)string:(NSString *)s {

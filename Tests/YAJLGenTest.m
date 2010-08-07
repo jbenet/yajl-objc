@@ -60,6 +60,24 @@
   GHAssertEqualStrings(buffer, expected, nil);
 }
 
+- (void) testGenFloats {
+  YAJLGen *gen = [[YAJLGen alloc] init];
+  [gen startArray];
+  [gen fpNumber:[NSNumber numberWithFloat:5]];
+  [gen fpNumber:[NSNumber numberWithFloat:-500.0]];
+  [gen fpNumber:[NSNumber numberWithDouble:10.00000]];
+  [gen fpNumber:[NSNumber numberWithDouble:234234.234234]];
+  [gen endArray];
+  NSString *buffer = [gen buffer];
+  [gen clear];
+  [gen release];
+  
+  NSString *expected = @"[5.0,-500.0,10.0,234234.234234]";
+  
+  GHTestLog(buffer);
+  GHAssertEqualStrings(buffer, expected, nil);  
+}
+
 - (void)testGenObject1 {
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
    [NSArray arrayWithObjects:@"arrayValue1", [NSNumber numberWithBool:YES], [NSNumber numberWithBool:NO], [NSNull null], 
